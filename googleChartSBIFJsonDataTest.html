@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+		var json = {
+  "UFs": 
+  [
+    {
+      "Valor": "21.451,88",
+      "Fecha": "2009-01-01"
+    },
+    {
+      "Valor": "21.451,19",
+      "Fecha": "2009-01-02"
+    },
+    {
+      "Valor": "21.450,50",
+      "Fecha": "2009-01-03"
+    },
+    {
+      "Valor": "21.449,80",
+      "Fecha": "2009-01-04"
+    },
+    {
+      "Valor": "21.449,11",
+      "Fecha": "2009-01-05"
+    },
+    {
+      "Valor": "21.448,42",
+      "Fecha": "2009-01-06"
+    },
+    {
+      "Valor": "21.447,73",
+      "Fecha": "2009-01-07"
+    }
+  ]}
+		google.charts.load('current', {packages:["corechart"]});
+		google.charts.setOnLoadCallback(drawChart);
+		function drawChart()
+		{
+			var data = new google.visualization.DataTable();
+			data.addColumn('string', 'Fecha');
+			data.addColumn('number', 'UF');
+
+			data.addRows(json.UFs.length);
+			for(var i=0; i<json.UFs.length; i++)
+			{
+				data.setValue(i,0,json.UFs[i].Fecha)
+				data.setValue(i,1,parseFloat(json.UFs[i].Valor.replace('.', '').replace(',', '.')))
+			}
+			var options = {
+			  title: 'Company Performance',
+			  curveType: 'function',
+			  legend: { position: 'bottom' }
+			};
+			var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+			chart.draw(data, options);
+		}
+    </script>
+  </head>
+  <body>
+    <div id="curve_chart" style="width: 900px; height: 500px"></div>
+  </body>
+</html>
