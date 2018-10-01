@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      function Get(yourUrl){
+          var Httpreq = new XMLHttpRequest(); // [Deprecation] Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience.
+          Httpreq.open("GET",yourUrl,false);
+          Httpreq.send(null);
+          return Httpreq.responseText;          
+      }    
+    </script>
+    <script type="text/javascript">
+			function drawChart() {
+				var data = new google.visualization.DataTable();
+				data.addColumn('string', 'Fecha');
+				data.addColumn('number', 'Dolar');
+
+				data.addRows(json.Dolares.length);
+
+        var min = 1000000;
+        var max = 0;
+        var sum = 0;
+				for(var i=0; i<json.Dolares.length; i++){
+						data.setValue(i,0,json.Dolares[i].Fecha)
+            var value = parseFloat(json.Dolares[i].Valor.replace('.', '').replace(',', '.'));
+            if (value > max) max = value;
+            if (value < min) min = value;
+            sum = sum + value;
+						data.setValue(i,1,value)
+			  }
+        
+  			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+  			chart.draw(data, {width: 700, height: 525, title: 'Valor de Dolar'});
+        
+        var analisisDiv = document.getElementById("analisis_div");
+
+        avg = sum / json.Dolares.length
+        var analisisData = document.createElement('P');
+
+        analisisData.appendChild(
+            document.createTextNode('Para los ' + json.Dolares.length + ' valores, estas son las estadisticas.\n' + 'max: ' + max + ' avg: ' + avg + ' min: ' + min)
+        );
+        analisisDiv.appendChild(analisisData);
+        addTable(json)
+			}
+
+      var json = JSON.parse(Get("http://localhost:3000<%= asset_path 'sbifDolarTest.json' %>"));
+      google.charts.load("visualization", "1", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+    </script>
+    <script type="text/javascript">
+      function addTable(json) {
+          var myTableDiv = document.getElementById("table_div")
+          var table = document.createElement('TABLE')
+          var tableBody = document.createElement('TBODY')
+
+          table.border = '1'
+          table.appendChild(tableBody);
+          
+          for (i = 0; i < json.Dolares.length; i++) {
+            var tr = document.createElement('TR');
+            var td = document.createElement('TD')
+            td.appendChild(document.createTextNode(json.Dolares[i].Fecha));
+            tr.appendChild(td);
+            var td = document.createElement('TD')
+            td.appendChild(document.createTextNode(parseFloat(json.Dolares[i].Valor.replace('.', '').replace(',', '.'))));
+            tr.appendChild(td);
+            tableBody.appendChild(tr);
+          }
+
+          myTableDiv.appendChild(table)
+      }
+    </script>
+  </head>
+  <body>
+    <div id="chart_div" style="width: 900px; height: 500px"></div>
+    <div id="analisis_div" style="font-size: 20px"></div>
+    <div id="table_div"></div>
+  </body>
+</html>
