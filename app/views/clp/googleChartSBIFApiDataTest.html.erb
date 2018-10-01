@@ -2,50 +2,79 @@
   <head>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-/*      function getJSONP(url, success) {
-        var ud = '_' + +new Date,
-            script = document.createElement('script'),
-            head = document.getElementsByTagName('head')[0] 
-                   || document.documentElement;
-
-        window[ud] = function(data) {
-            head.removeChild(script);
-            success && success(data);
-        };
-
-        script.src = url;
-        head.appendChild(script);
-
-      }
       function Get(yourUrl){
-    var Httpreq = new XMLHttpRequest(); // a new request
-    Httpreq.open("GET",yourUrl,false);
-    Httpreq.send(null);
-    return Httpreq.responseText;          
-} it seems that this format does not parse ':'in UFs:*/
-  var json = JSON.parse(Get("http://localhost:3000<%= asset_path 'sbifDataTest.json' %>"));
-//getJSONP('<%= asset_path 'sbifDataTest.json' %>', function(data){console.log(data);});  
+          var Httpreq = new XMLHttpRequest(); // [Deprecation] Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience.
+          Httpreq.open("GET",yourUrl,false);
+          Httpreq.send(null);
+          return Httpreq.responseText;          
+      }    
+    </script>
+    <script type="text/javascript">
+			function drawChart() {
+				var data = new google.visualization.DataTable();
+				data.addColumn('string', 'Fecha');
+				data.addColumn('number', 'UF');
 
-				google.charts.load("visualization", "1", {packages:["corechart"]});
-				google.charts.setOnLoadCallback(drawChart);
-				function drawChart() {
-						var data = new google.visualization.DataTable();
-						data.addColumn('string', 'Fecha');
-						data.addColumn('number', 'UF');
+				data.addRows(json.UFs.length);
 
-						data.addRows(json.UFs.length);
-						for(var i=0; i<json.UFs.length; i++){
-								data.setValue(i,0,json.UFs[i].Fecha)
-								data.setValue(i,1,parseFloat(json.UFs[i].Valor.replace('.', '').replace(',', '.')))
-						}
+        var min = 1000000;
+        var max = 0;
+        var sum = 0;
+				for(var i=0; i<json.UFs.length; i++){
+						data.setValue(i,0,json.UFs[i].Fecha)
+            var value = parseFloat(json.UFs[i].Valor.replace('.', '').replace(',', '.'));
+            if (value > max) max = value;
+            if (value < min) min = value;
+            sum = sum + value;
+						data.setValue(i,1,value)
+			  }
+        
+  			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+  			chart.draw(data, {width: 700, height: 525, title: 'Valor de UF'});
+        
+        var analisisDiv = document.getElementById("analisis_div");
 
-				var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-				chart.draw(data, {width: 700, height: 525, title: 'Valor de UF'});
-				}
+        avg = sum / json.UFs.length
+        var analisisData = document.createElement('P');
+
+        analisisData.appendChild(
+            document.createTextNode('Para los ' + json.UFs.length + ' valores, estas son las estadisticas.\n' + 'max: ' + max + ' avg: ' + avg + ' min: ' + min)
+        );
+        analisisDiv.appendChild(analisisData);
+        addTable(json)
+			}
+
+      var json = JSON.parse(Get("http://localhost:3000<%= asset_path 'sbifDataTest.json' %>"));
+      google.charts.load("visualization", "1", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+    </script>
+    <script type="text/javascript">
+      function addTable(json) {
+          var myTableDiv = document.getElementById("table_div")
+          var table = document.createElement('TABLE')
+          var tableBody = document.createElement('TBODY')
+
+          table.border = '1'
+          table.appendChild(tableBody);
+          
+          for (i = 0; i < json.UFs.length; i++) {
+            var tr = document.createElement('TR');
+            var td = document.createElement('TD')
+            td.appendChild(document.createTextNode(json.UFs[i].Fecha));
+            tr.appendChild(td);
+            var td = document.createElement('TD')
+            td.appendChild(document.createTextNode(parseFloat(json.UFs[i].Valor.replace('.', '').replace(',', '.'))));
+            tr.appendChild(td);
+            tableBody.appendChild(tr);
+          }
+
+          myTableDiv.appendChild(table)
+      }
     </script>
   </head>
   <body>
     <div id="chart_div" style="width: 900px; height: 500px"></div>
-	<!--script type="text/javascript" src="http://api.sbif.cl/api-sbifv3/recursos_api/uf/periodo/2008/2010?apikey=a2e560226b0acec90f8893ace3d460edb8a087a3&formato=json&callback=despliegue"></script-->
+    <div id="analisis_div" style="font-size: 20px"></div>
+    <div id="table_div"></div>
   </body>
 </html>
