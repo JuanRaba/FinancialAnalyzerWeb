@@ -35,7 +35,7 @@
         analisisDiv.appendChild(analisisData);
         addTable(json)
 			}
-      var json = <%=@json.to_json.html_safe%>;
+      var json = <%=@json.to_json.html_safe%>;//replace json.Dolares to data in this script to make it reusable
       google.charts.load("visualization", "1", {packages:["corechart"]});
       google.charts.setOnLoadCallback(drawChart);
     </script>

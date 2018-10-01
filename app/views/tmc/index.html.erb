@@ -1,0 +1,12 @@
+<%@data.each do |d|%>
+  <table style="border-style: solid;">
+  <p><%=d.last.first["Titulo"]%></p>
+  <p><%=d.last.first["SubTitulo"]%></p>
+  <%d.last.each do |e|%>
+  <tr>
+    <td><%=e["Fecha"]%></td>
+    <td><%=e["Valor"]%></td>
+  </tr>
+  <%end%>
+  </table>
+<%end%>
