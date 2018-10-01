@@ -25,5 +25,6 @@ class ClpController < ApplicationController
     end
     # warning we are exposing our apikey to the world
     @apikey = "a2e560226b0acec90f8893ace3d460edb8a087a3"
+    # maybe we can use gem JSON and JSON.load(open("https://api.github.com"))
   end
 end
