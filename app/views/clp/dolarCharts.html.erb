@@ -43,8 +43,7 @@
         analisisDiv.appendChild(analisisData);
         addTable(json)
 			}
-
-      var json = JSON.parse(Get("http://localhost:3000<%= asset_path 'sbifDolarTest.json' %>"));
+      var json = JSON.parse(Get("http://localhost:3000<%= asset_path 'sbifDataTest.json' %>"));
       google.charts.load("visualization", "1", {packages:["corechart"]});
       google.charts.setOnLoadCallback(drawChart);
     </script>
