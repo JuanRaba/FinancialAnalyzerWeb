@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">	
+		function despliegue( json ) {
+				google.load("visualization", "1", {packages:["corechart"]});
+				google.setOnLoadCallback(drawChart);
+				function drawChart() {
+						var data = new google.visualization.DataTable();
+						data.addColumn('string', 'Fecha');
+						data.addColumn('number', 'Dolares');
+
+						data.addRows(json.UFs.length);
+						for(var i=0; i<json.UFs.length; i++){
+								data.setValue(i,0,json.Dolares[i].Fecha)
+								data.setValue(i,1,parseFloat(json.Dolares[i].Valor.replace('.', '').replace(',', '.')))
+						}
+
+				var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+				chart.draw(data, {width: 700, height: 525, title: 'Valor de Dolares'});
+				}
+		}
+    </script>
+  </head>
+  <body>
+    <div id="chart_div" style="width: 900px; height: 500px"></div>
+	<script type="text/javascript" src="https://api.sbif.cl/api-sbifv3/recursos_api/dolar/periodo/2010/01/dias_i/04/2011/01/dias_f/05?apikey=a2e560226b0acec90f8893ace3d460edb8a087a3&formato=json&callback=despliegue"></script>
+ 	<!--script type="text/javascript" src="sbifDataTest.json&callback=despliegue"></script-->
+  </body>
+</html>
