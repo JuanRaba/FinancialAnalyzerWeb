@@ -65,8 +65,10 @@
   </head>
   <body>
     <h1><%=@startY%>/<%=@startM%> - <%=@endY%>/<%=@endM%></h1>
-    <div id="chart_div" style="width: 900px; height: 500px"></div>
     <div id="analisis_div" style="font-size: 20px"></div>
-    <div id="table_div"></div>
+    <div class="row">
+      <div class="col-md-10" id="chart_div" style="width: 900px; height: 500px"></div>
+      <div class="col-md-2" id="table_div"></div>
+    </div>  
   </body>
 </html>

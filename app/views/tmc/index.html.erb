@@ -5,18 +5,22 @@
       var nums = ["26", "25", "33", "35", "36", "21", "24", "22", "34", "41", "45", "44", "43"];
       for (var j=0; j<nums.length; j++) {
         var chart_data = newdata[nums[j]];
+        while (chart_data.length == 0){
+          j++;
+          chart_data = newdata[nums[j]];
+        }
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Fecha');
-        data.addColumn('number', 'Valor');
+        data.addColumn('number', 'Valor '+nums[j]);
         data.addRows(chart_data.length);
 
         for(var i=0; i<chart_data.length; i++){
             data.setValue(i,0,chart_data[i]["Fecha"]);
             data.setValue(i,1,chart_data[i]["Valor"]);
         }
-        
+
         var chart = new google.visualization.LineChart(document.getElementById('chart_div'+nums[j]));
-        chart.draw(data, {width: 700, height: 525, title: 'Valor de '+nums[j]});
+        chart.draw(data, {height: 525, title: "Max: " + data.getColumnRange(1).max});
       }
     }
     var newdata = <%=@data.to_json.html_safe%>;
@@ -25,21 +29,26 @@
   </script>
 </head>
 
-<%@data.each do |d|%>
-  <div id="<%=d.last.first['Tipo']%>">
-    <table style="border-style: solid;">
-    <p><%=d.last.first["Titulo"]%></p>
-    <p><%=d.last.first["SubTitulo"]%></p>
-    <%d.last.each do |e|%>
-    <tr>
-      <td><%=e["Fecha"]%></td>
-      <td><%=e["Valor"]%></td>
-    </tr>
-    <%end%>
-    </table>
 
-    <div id="chart_div<%=d.last.first['Tipo']%>"></div>
-  </div>
+<%@data.each do |d|%>
+  <%if d.last.size > 0 then%>
+    <div id="<%=d.last.first['Tipo']%>" class="row" style="text-align: center;">
+        <h1><%=@startY%>/<%=@startM%> - <%=@endY%>/<%=@endM%></h1>
+        <p><%=d.last.first["Titulo"]%></p>
+        <p><%=d.last.first["SubTitulo"]%></p>
+      <div id="chart_div<%=d.last.first['Tipo']%>" class="col-md-10"></div>
+      <div id="table<%=d.last.first['Tipo']%>" class="col-md-2">
+        <table style="border-style: solid;">
+        <%d.last.each do |e|%>
+        <tr>
+          <td><%=e["Fecha"]%></td>
+          <td><%=e["Valor"]%></td>
+        </tr>
+        <%end%>
+        </table>
+      </div>
+    </div>
+  <%end%>
 <%end%>
 
 
