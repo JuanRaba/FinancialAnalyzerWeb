@@ -3,7 +3,7 @@ class ClpController < ApplicationController
   end
   def ufsCharts
     get_params
-    @jsonUrl = "https://api.sbif.cl/api-sbifv3/recursos_api/uf/periodo/#{@startY}/#{@startM}/#{@endY}/#{@endM}?apikey=#{@apikey}&formato=xml"
+    @jsonUrl = "https://api.sbif.cl/api-sbifv3/recursos_api/uf/periodo/#{@startY}/#{@startM}/#{@endY}/#{@endM}?apikey=#{@apikey}&formato=json"
     require "net/http"
     url = @jsonUrl  
     @json = JSON.parse(Net::HTTP.get_response(URI.parse(url)).body)
